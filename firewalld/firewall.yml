@@ -1,0 +1,13 @@
+- name: Ensure firewald is setup
+  hosts: all
+  tasks:
+  - name: Ensure firewalld is installed
+    yum:
+      name: firewalld
+      state: present
+
+  - name: Ensure firewall service is running
+    service:
+      name: firewalld
+      state: started
+      enabled: true

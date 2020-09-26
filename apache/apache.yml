@@ -1,0 +1,25 @@
+- name: Ensure apache web server is configured
+  hosts: all
+  tasks:
+  - name: Ensure apache is installed
+    yum:
+      name: httpd
+      state: present
+
+  - name: Ensure content is setup
+    template:
+      src: templates/index.html.j2
+      dest: /var/www/html/index.html
+
+  - name: Ensure http port is open in firewall
+    firewalld:
+      service: http
+      immediate: true
+      permanent: true
+      state: enabled
+
+  - name: Ensure httpd service is running
+    service:
+      name: httpd
+      state: started
+      enabled: true
