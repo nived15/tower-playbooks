@@ -1,0 +1,18 @@
+shared_dir: /smbshare
+share_name: smbshare
+mount_point: /developments
+
+# User account for mounting the share
+
+samba_usermount: sambamount
+samba_passmount: redhat
+
+# User accounts with write access to the share
+
+allowed_group: developers
+samba_users:
+  - name: developer1
+    password: redhat
+  - name: developer2
+    password: redhat
+
