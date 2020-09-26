@@ -1,0 +1,4 @@
+- name: Ensure facts are gathered
+  hosts: all
+  tasks:
+  - setup:
