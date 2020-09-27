@@ -1,0 +1,48 @@
+- name: Install MariaDB server
+  hosts: all
+  vars_files:
+    - files/secret.yml
+  tasks:
+  - block:
+      - name: Install mariadb-server package
+        yum: name={{ item }} state=present
+        loop:
+          - mariadb-server
+          - python3-PyMySQL
+
+      - name: Enable and start mariadb
+        service: name=mariadb state=started enabled=true
+
+      - name: Firewall permits mysql service
+        firewalld: service=mysql permanent=true state=enabled immediate=yes
+
+      - name: Assign password to MariaDB root user
+        mysql_user:
+          name: root
+          host_all: yes
+          update_password: always
+          password: "{{ pw }}"
+
+      - name: Authentication credentials copied to root home directory
+        copy: src=files/my.cnf dest=/root/.my.cnf
+
+      - name: Remove anonymous user accounts
+        mysql_user:
+          name: ''
+          host_all: yes
+          state: absent
+
+      - name: Remove test database
+        mysql_db:
+          name: test
+          state: absent
+    when: inventory_hostname in groups['db_servers']
+
+  - block:
+      - name: Install mariadb client
+        yum:
+          name: 
+            - mariadb
+            - python3-PyMySQL
+          state: present
+    when: inventory_hostname in groups['db_clients']
